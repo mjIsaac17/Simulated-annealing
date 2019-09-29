@@ -14,11 +14,18 @@ TEMPERATURE_REDUCTION_FACTOR = 0.95
 ITERATIONS_EACH_TEMPERATURE = 10
 
 #Define the range of the values by the objective function 
+#Ackley function
 MAX_R_ACKLEY = 5
 MIN_R_ACKLEY = -5
 
+#Beale function
 MAX_R_BEALE = 4.5
 MIN_R_BEALE = 4.5
+
+#Goldstein–Price function
+MAX_R_GOLDSTEIN = 2
+MIN_R_GOLDSTEIN = -2
+
 
 #Maximum amount to both sides to explore the neighborhood
 MAX_STEP = 0.5 
@@ -29,7 +36,11 @@ def fn_ackley_function(x,y):
     return f
 
 def fn_beale_function(x,y):
-    f = (1.5-x+x*y)**2 + (2.25-x+(x*y**2))**2 + (2.625-x+(x*y**3))**2
+    f = (1.5 - x + x*y)**2 + (2.25 - x + (x*y**2))**2 + (2.625 - x + (x*y**3))**2
+    return f
+
+def fn_goldstein_price_function(x,y):
+    f = ( (1+(x+y+1)**2) * (19 - 14*x + (3*x**2) - 14*y + 6*x*y + (3*y**2)) ) * (30 + ((2*x - 3*y)**2) * (18 - 32*x + (12*x**2) + 48*y - 36*x*y + (27*y**2)) ) 
     return f
 
 def fn_initialize_solution_akley():
@@ -40,6 +51,11 @@ def fn_initialize_solution_akley():
 def fn_initialize_solution_beale():
     x = r.uniform(MIN_R_BEALE, MAX_R_BEALE)
     y = r.uniform(MIN_R_BEALE, MAX_R_BEALE)
+    return x, y
+
+def fn_initialize_solution_goldstein():
+    x = r.uniform(MIN_R_GOLDSTEIN, MAX_R_GOLDSTEIN)
+    y = r.uniform(MIN_R_GOLDSTEIN, MAX_R_GOLDSTEIN)
     return x, y
 
 def fn_exploration():
@@ -121,5 +137,38 @@ def fn_mainSA_beale():
     print("Y: ", y)
     fn_plot(array_x, array_y, array_energy, 'Beale function')
 
+def fn_mainSA_goldstein_price():
+    x, y = fn_initialize_solution_goldstein()
+    energy = fn_goldstein_price_function(x,y)
+    temperature = INITIAL_TEMPERATURE
+    array_x = []
+    array_y = []
+    array_energy = []
+    while(temperature > FINAL_TEMPERATURE): #termination criteria
+        for i in range(ITERATIONS_EACH_TEMPERATURE):
+            step_x, step_y = fn_exploration()
+            new_energy = fn_goldstein_price_function(x+step_x, y+step_y)
+            delta_energy = new_energy - energy
+            if(delta_energy <= 0):
+                x += step_x
+                y += step_y
+                energy = new_energy
+            else:
+                rand = r.random()
+                if(rand < math.exp((-1*delta_energy)/temperature)):
+                    x += step_x
+                    y += step_y
+                    energy = new_energy
+            array_x.append(x)
+            array_y.append(y)
+            array_energy.append(energy)
+        temperature *= TEMPERATURE_REDUCTION_FACTOR
+        print(temperature)
+    print("Final value of objective function: ", energy)
+    print("X: ", x)
+    print("Y: ", y)
+    fn_plot(array_x, array_y, array_energy, 'Goldstein-price function')
+
 #fn_mainSA_ackley()
-fn_mainSA_beale()
+#fn_mainSA_beale()
+fn_mainSA_goldstein_price()
