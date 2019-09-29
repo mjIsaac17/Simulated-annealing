@@ -3,12 +3,13 @@
 # Created: 9/28/2019
 # Modified: 
 from mpl_toolkits.mplot3d import Axes3D
-from matplotlib import pyplot as plot
+import matplotlib.pyplot as plot
 import random as r
+import numpy as np
 import math 
 
 INITIAL_TEMPERATURE = 20
-FINAL_TEMPERATURE = 0.5 
+FINAL_TEMPERATURE = 0.05 
 TEMPERATURE_REDUCTION_FACTOR = 0.95
 ITERATIONS_EACH_TEMPERATURE = 10
 
@@ -35,11 +36,13 @@ def fn_exploration():
     step_y = r.uniform(-1*MAX_STEP, MAX_STEP)
     return step_x, step_y
 
-def fn_plot(array_x, array_y):
+def fn_plot(array_x, array_y, array_energy):   
     fig = plot.figure()
-    ax = Axes3D(fig)
-    # put 0s on the y-axis, and put the y axis on the z-axis
-    ax.plot(xs = array_x, ys=[0]*len(array_x), zs=array_y, zdir='z', label='ys=0, zdir=z')
+    ax = fig.add_subplot(111,projection='3d')
+    ax.set_xlabel('X')
+    ax.set_ylabel('Y')
+    ax.set_zlabel('Z') 
+    ax.plot_trisurf(array_x, array_y,array_energy, cmap=plot.cm.Spectral, antialiased=False)
     plot.show()
 
 def fn_main_SA_ackleyF():
@@ -48,6 +51,7 @@ def fn_main_SA_ackleyF():
     temperature = INITIAL_TEMPERATURE
     array_x = []
     array_y = []
+    array_energy = []
     while(temperature > FINAL_TEMPERATURE): #termination criteria
         for i in range(ITERATIONS_EACH_TEMPERATURE):
             step_x, step_y = fn_exploration()
@@ -65,11 +69,12 @@ def fn_main_SA_ackleyF():
                     energy = new_energy
             array_x.append(x)
             array_y.append(y)
+            array_energy.append(energy)
         temperature *= TEMPERATURE_REDUCTION_FACTOR
         print(temperature)
     print("Final value of objective function: ", energy)
     print("X: ", x)
     print("Y: ", y)
-    fn_plot(array_x, array_y)
+    fn_plot(array_x, array_y, array_energy)
 
 fn_main_SA_ackleyF()
