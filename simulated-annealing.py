@@ -8,7 +8,7 @@ import random as r
 import numpy as np
 import math 
 
-INITIAL_TEMPERATURE = 20
+INITIAL_TEMPERATURE = 10
 FINAL_TEMPERATURE = 0.05 
 TEMPERATURE_REDUCTION_FACTOR = 0.95
 ITERATIONS_EACH_TEMPERATURE = 10
@@ -27,12 +27,12 @@ MAX_R_GOLDSTEIN = 2
 MIN_R_GOLDSTEIN = -2
 
 #Easom function
-MAX_R_EASOM = 10
-MIN_R_EASOM = -10
+MAX_R_EASOM = 4
+MIN_R_EASOM = -4
 
 
 #Maximum amount to both sides to explore the neighborhood
-MAX_STEP = -0.5
+MAX_STEP = -0.4
 
 #objective function (ackley function), evaluates the energy
 def fn_ackley_function(x,y):
@@ -50,7 +50,6 @@ def fn_goldstein_price_function(x,y):
 def fn_easom_function(x,y):
     f = -1 * math.cos(x) * math.cos(y) * math.exp(-1 * ((x - math.pi)**2 + (y - math.pi)**2))
     return f
-print(fn_easom_function(5.990397119524389,13.000477673369343))
 
 #Random initialization by objective function range
 def fn_initialize_solution_akley():
@@ -119,8 +118,6 @@ def fn_mainSA_ackley():
         temperature *= TEMPERATURE_REDUCTION_FACTOR
         print(temperature)
     print("Final value of objective function: ", energy)
-    print("X: ", x)
-    print("Y: ", y)
     fn_plot(array_x, array_y, array_energy,'Ackley function')
 
 def fn_mainSA_beale():
@@ -151,8 +148,6 @@ def fn_mainSA_beale():
         temperature *= TEMPERATURE_REDUCTION_FACTOR
         print(temperature)
     print("Final value of objective function: ", energy)
-    print("X: ", x)
-    print("Y: ", y)
     fn_plot(array_x, array_y, array_energy, 'Beale function')
 
 def fn_mainSA_goldstein_price():
@@ -183,8 +178,6 @@ def fn_mainSA_goldstein_price():
         temperature *= TEMPERATURE_REDUCTION_FACTOR
         print(temperature)
     print("Final value of objective function: ", energy)
-    print("X: ", x)
-    print("Y: ", y)
     fn_plot(array_x, array_y, array_energy, 'Goldstein-price function')
 
 def fn_mainSA_easom():
@@ -215,11 +208,9 @@ def fn_mainSA_easom():
         temperature *= TEMPERATURE_REDUCTION_FACTOR
         print(temperature)
     print("Final value of objective function: ", energy)
-    print("X: ", x)
-    print("Y: ", y)
     fn_plot(array_x, array_y, array_energy, 'Easom function')
 
 #fn_mainSA_ackley()
 #fn_mainSA_beale()
 #fn_mainSA_goldstein_price()
-#fn_mainSA_easom()
+fn_mainSA_easom()
